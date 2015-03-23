@@ -78,7 +78,7 @@ body{
 	top: calc(50% - 75px);
 	left: calc(50% - 50px);
 	height: 150px;
-	width: 350px;
+	width: 650px;
 	padding: 10px;
 	z-index: 2;
 }
@@ -163,30 +163,51 @@ color: #5379fa ;
 
 </head>
 <script>
+function validateEmail(){
+	var emailID = document.forms["register"]["email"].value;
+	var letter = /[a-zA-Z]/; 
+	var number = /[0-9]/;
+	var atpos = emailID.indexOf("@");
+	var dotpos = emailID.lastIndexOf(".");
+	var valid = true;
+	if (atpos < 1 || ( dotpos - atpos < 2 )) 
+	{
+       valid=false;
+	}
+	if (!valid)
+	{
+		document.getElementById("emailError").innerHTML = "Invalid Email";
+	}  
+	else{
+		document.getElementById("emailError").innerHTML = "";
+	}
+	return valid;
+}
+function validatePassword()
+{
+	var validPwd=true;
+	var pwd=document.forms["register"]["password"].value;
+	var letter = /[a-zA-Z]/; 
+	var number = /[0-9]/;
+	var valid = number.test(pwd) && letter.test(pwd); //match a letter _and_ a number
+	if (!valid)
+	{
+		document.getElementById("passwordError").innerHTML = "Password must contain atleast one alphabet and one digit"; 
+	}
+	else{
+		document.getElementById("passwordError").innerHTML = ""; 
+	}
+	return valid;
+}
 function validate()
 {
-var validPwd=true;
-var pwd=document.forms["register"]["password"].value;
-var emailID = document.forms["register"]["email"].value;
-var letter = /[a-zA-Z]/; 
-var number = /[0-9]/;
-var valid = number.test(pwd) && letter.test(pwd); //match a letter _and_ a number
- atpos = emailID.indexOf("@");
-dotpos = emailID.lastIndexOf(".");
-  if (atpos < 1 || ( dotpos - atpos < 2 )) 
-   {
-       var validPwd=false;
-   }
-if (!valid)
-  {
-   alert("Invalid Email"); 
-  }  
-if (!validPwd)
-  {
-   alert("Invalid Password:Password must contain atleast one alphabet and one number"); 
-  }
-  valid=valid && validPwd;
-  return valid;   
+	if(validateEmail() && validatePassword()){
+		return true;
+	}
+	else{
+		return false;
+	}
+	
 }
 </script>
 
@@ -199,10 +220,10 @@ if (!validPwd)
 		</div>
 		<br>
 	<div class="login">	
-	<form name="register" action = "/register" method = "post" onsubmit="return validate()">
-		<input type="text" placeholder="email" name="email" required><br>
-		<input type="password" placeholder="password" name="password" required><br>
-		<input type = "submit" value = "Register" />
+	<form name="register" action = "/register" method = "post" onsubmit = "return validate()">
+		<input type="text" placeholder="email" name="email" required onchange="return validateEmail()"><span id = "emailError"></span><br>
+		<input type="password" placeholder="password" name="password" required onchange = "return validatePassword()"><span id = "passwordError"></span><br>
+		<input type = "submit" value = "Register"/>
 	</form>
 	
 	<% if(messages.length != 0){ %>
